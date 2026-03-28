@@ -1,0 +1,1056 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VALORANT Companion | Desktop App</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'SF Pro Display', 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
+            color: #ffffff;
+            overflow-x: hidden;
+            scroll-behavior: smooth;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.5);
+        }
+
+        /* Container */
+        .app-container {
+            min-height: 100vh;
+            position: relative;
+        }
+
+        /* Glassmorphism Effect */
+        .glass {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        /* Header */
+        .header {
+            padding: 2rem 2rem 1rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: rgba(15, 12, 41, 0.8);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 1.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #ff6a00, #ee0979);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .logo-icon {
+            font-size: 2rem;
+        }
+
+        .nav-buttons {
+            display: flex;
+            gap: 12px;
+        }
+
+        .nav-btn {
+            padding: 8px 20px;
+            border-radius: 100px;
+            border: none;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+        }
+
+        .nav-btn-primary {
+            background: linear-gradient(135deg, #ff6a00, #ee0979);
+            color: white;
+        }
+
+        .nav-btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(238, 9, 121, 0.3);
+        }
+
+        .nav-btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .nav-btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        /* Main Content */
+        .main-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        /* Hero Section */
+        .hero {
+            text-align: center;
+            margin-bottom: 4rem;
+            animation: fadeInUp 0.8s ease;
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, #fff, #a8c0ff);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            color: rgba(255, 255, 255, 0.8);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Bento Grid Layout */
+        .bento-grid {
+            display: grid;
+            grid-template-columns: repeat(12, 1fr);
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+        }
+
+        /* Card Styles */
+        .card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border-radius: 2rem;
+            padding: 1.5rem;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.5), transparent);
+            transform: translateX(-100%);
+            transition: transform 0.6s ease;
+        }
+
+        .card:hover::before {
+            transform: translateX(100%);
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(255, 255, 255, 0.2);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Grid Item Sizes */
+        .grid-span-3 { grid-column: span 3; }
+        .grid-span-4 { grid-column: span 4; }
+        .grid-span-5 { grid-column: span 5; }
+        .grid-span-6 { grid-column: span 6; }
+        .grid-span-7 { grid-column: span 7; }
+        .grid-span-8 { grid-column: span 8; }
+        .grid-span-12 { grid-column: span 12; }
+
+        /* Card Header */
+        .card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1.5rem;
+        }
+
+        .card-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .card-icon {
+            font-size: 1.5rem;
+        }
+
+        /* Status Indicator */
+        .status-indicator {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 12px;
+            border-radius: 100px;
+            background: rgba(0, 0, 0, 0.3);
+            font-size: 0.85rem;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #ff4444;
+            transition: all 0.3s ease;
+        }
+
+        .status-dot.active {
+            background: #44ff44;
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(68, 255, 68, 0.7); }
+            70% { box-shadow: 0 0 0 10px rgba(68, 255, 68, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(68, 255, 68, 0); }
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 1rem;
+            transition: transform 0.3s ease;
+        }
+
+        .stat-item:hover {
+            transform: scale(1.05);
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #ff6a00, #ee0979);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .stat-label {
+            font-size: 0.85rem;
+            color: rgba(255, 255, 255, 0.7);
+            margin-top: 0.5rem;
+        }
+
+        /* Buttons */
+        .btn {
+            padding: 12px 24px;
+            border-radius: 100px;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+            width: 100%;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #ff6a00, #ee0979);
+            color: white;
+        }
+
+        .btn-primary:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(238, 9, 121, 0.3);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .btn-secondary:hover:not(:disabled) {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* Recording Controls */
+        .recording-controls {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        /* Recordings Grid */
+        .recordings-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1rem;
+            max-height: 500px;
+            overflow-y: auto;
+            padding-right: 0.5rem;
+        }
+
+        .recording-item {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 1rem;
+            padding: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .recording-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateX(5px);
+        }
+
+        .recording-info {
+            margin-top: 0.5rem;
+        }
+
+        .recording-date {
+            font-size: 0.85rem;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .recording-stats {
+            font-size: 0.8rem;
+            color: rgba(255, 255, 255, 0.6);
+            margin: 0.5rem 0;
+        }
+
+        .download-btn {
+            padding: 6px 12px;
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            border-radius: 8px;
+            color: white;
+            cursor: pointer;
+            font-size: 0.8rem;
+            transition: all 0.3s ease;
+        }
+
+        .download-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        /* Progress Bar */
+        .progress-bar {
+            width: 100%;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 2px;
+            overflow: hidden;
+            margin-top: 1rem;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #ff6a00, #ee0979);
+            width: 0%;
+            transition: width 0.3s ease;
+            border-radius: 2px;
+        }
+
+        /* Authentication Modal */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(20px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .modal-content {
+            background: rgba(30, 30, 50, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 2rem;
+            padding: 2rem;
+            max-width: 400px;
+            width: 90%;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            animation: slideUp 0.3s ease;
+        }
+
+        .modal-tabs {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .modal-tab {
+            padding: 0.5rem 1rem;
+            cursor: pointer;
+            border: none;
+            background: none;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .modal-tab.active {
+            color: #ff6a00;
+            border-bottom: 2px solid #ff6a00;
+        }
+
+        .input-group {
+            margin-bottom: 1rem;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            color: white;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .input-group input:focus {
+            outline: none;
+            border-color: #ff6a00;
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .bento-grid {
+                grid-template-columns: repeat(6, 1fr);
+            }
+            .hero h1 { font-size: 2.5rem; }
+        }
+
+        @media (max-width: 768px) {
+            .bento-grid {
+                grid-template-columns: 1fr;
+            }
+            .grid-span-3, .grid-span-4, .grid-span-5, .grid-span-6, .grid-span-7, .grid-span-8 {
+                grid-column: span 1;
+            }
+            .hero h1 { font-size: 2rem; }
+            .nav { flex-direction: column; gap: 1rem; }
+        }
+
+        /* Loading Spinner */
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid rgba(255, 255, 255, 0.1);
+            border-top-color: #ff6a00;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 2rem auto;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Notification */
+        .notification {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.9);
+            backdrop-filter: blur(10px);
+            padding: 1rem 1.5rem;
+            border-radius: 12px;
+            border-left: 4px solid #ff6a00;
+            animation: slideInRight 0.3s ease;
+            z-index: 1000;
+        }
+
+        @keyframes slideInRight {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <div class="header">
+            <div class="nav">
+                <div class="logo">
+                    <span class="logo-icon">🎮</span>
+                    <span>VALORANT Companion</span>
+                </div>
+                <div class="nav-buttons" id="navButtons">
+                    <button class="nav-btn nav-btn-secondary" id="dashboardBtn">Dashboard</button>
+                    <button class="nav-btn nav-btn-secondary" id="recorderBtn">Recorder</button>
+                    <button class="nav-btn nav-btn-primary" id="authBtn">Sign In</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content" id="mainContent">
+            <!-- Hero Section -->
+            <div class="hero">
+                <h1>Elevate Your Game</h1>
+                <p>Automatic recording, cloud storage, and match analytics for VALORANT</p>
+            </div>
+
+            <!-- Bento Grid Dashboard -->
+            <div class="bento-grid" id="dashboardView">
+                <!-- Status Card -->
+                <div class="card grid-span-4">
+                    <div class="card-header">
+                        <div class="card-title">
+                            <span class="card-icon">🎯</span>
+                            <span>Recording Status</span>
+                        </div>
+                        <div class="status-indicator" id="statusIndicator">
+                            <div class="status-dot"></div>
+                            <span>Not Recording</span>
+                        </div>
+                    </div>
+                    <div id="matchStatusText">No active match detected</div>
+                    <div class="progress-bar" id="uploadProgress" style="display: none;">
+                        <div class="progress-fill" id="uploadProgressFill"></div>
+                    </div>
+                </div>
+
+                <!-- Match Stats Card -->
+                <div class="card grid-span-4">
+                    <div class="card-header">
+                        <div class="card-title">
+                            <span class="card-icon">📊</span>
+                            <span>Current Match Stats</span>
+                        </div>
+                    </div>
+                    <div class="stats-grid">
+                        <div class="stat-item">
+                            <div class="stat-value" id="killsCount">0</div>
+                            <div class="stat-label">Kills</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value" id="deathsCount">0</div>
+                            <div class="stat-label">Deaths</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value" id="assistsCount">0</div>
+                            <div class="stat-label">Assists</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Controls Card -->
+                <div class="card grid-span-4">
+                    <div class="card-header">
+                        <div class="card-title">
+                            <span class="card-icon">🎬</span>
+                            <span>Recording Controls</span>
+                        </div>
+                    </div>
+                    <div class="recording-controls">
+                        <button class="btn btn-primary" id="startRecordingBtn" disabled>Start Recording</button>
+                        <button class="btn btn-secondary" id="stopRecordingBtn" disabled>Stop Recording</button>
+                    </div>
+                    <div style="margin-top: 1rem; font-size: 0.85rem; color: rgba(255,255,255,0.6);">
+                        ⚡ Auto-recording starts when match begins
+                    </div>
+                </div>
+
+                <!-- Recent Recordings Card -->
+                <div class="card grid-span-6">
+                    <div class="card-header">
+                        <div class="card-title">
+                            <span class="card-icon">📹</span>
+                            <span>Recent Recordings</span>
+                        </div>
+                        <button class="download-btn" id="refreshRecordingsBtn" style="background: rgba(255,255,255,0.1);">Refresh</button>
+                    </div>
+                    <div class="recordings-grid" id="recordingsList">
+                        <div style="text-align: center; padding: 2rem;">No recordings yet</div>
+                    </div>
+                </div>
+
+                <!-- Quick Stats Card -->
+                <div class="card grid-span-6">
+                    <div class="card-header">
+                        <div class="card-title">
+                            <span class="card-icon">📈</span>
+                            <span>Career Statistics</span>
+                        </div>
+                    </div>
+                    <div class="stats-grid" id="careerStats">
+                        <div class="stat-item">
+                            <div class="stat-value" id="totalMatches">0</div>
+                            <div class="stat-label">Total Matches</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value" id="totalKills">0</div>
+                            <div class="stat-label">Total Kills</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value" id="avgKills">0</div>
+                            <div class="stat-label">Avg Kills/Match</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Auth Modal -->
+    <div id="authModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-tabs">
+                <button class="modal-tab active" data-tab="login">Login</button>
+                <button class="modal-tab" data-tab="signup">Sign Up</button>
+            </div>
+            <div id="loginForm" class="auth-form">
+                <div class="input-group">
+                    <input type="email" id="loginEmail" placeholder="Email" autocomplete="email">
+                </div>
+                <div class="input-group">
+                    <input type="password" id="loginPassword" placeholder="Password" autocomplete="current-password">
+                </div>
+                <button class="btn btn-primary" id="loginSubmitBtn">Login</button>
+                <div style="margin-top: 1rem; text-align: center; font-size: 0.85rem; color: rgba(255,255,255,0.6);">
+                    Demo: testuser@example.com / 123456
+                </div>
+            </div>
+            <div id="signupForm" class="auth-form" style="display: none;">
+                <div class="input-group">
+                    <input type="text" id="signupUsername" placeholder="Username">
+                </div>
+                <div class="input-group">
+                    <input type="email" id="signupEmail" placeholder="Email">
+                </div>
+                <div class="input-group">
+                    <input type="password" id="signupPassword" placeholder="Password">
+                </div>
+                <button class="btn btn-primary" id="signupSubmitBtn">Sign Up</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // App State
+        let isAuthenticated = false;
+        let isRecording = false;
+        let currentUser = null;
+        let recordings = [];
+        let matchStats = { kills: 0, deaths: 0, assists: 0 };
+        
+        // DOM Elements
+        const dashboardView = document.getElementById('dashboardView');
+        const authBtn = document.getElementById('authBtn');
+        const authModal = document.getElementById('authModal');
+        const startRecordingBtn = document.getElementById('startRecordingBtn');
+        const stopRecordingBtn = document.getElementById('stopRecordingBtn');
+        const statusIndicator = document.getElementById('statusIndicator');
+        const matchStatusText = document.getElementById('matchStatusText');
+        const killsCount = document.getElementById('killsCount');
+        const deathsCount = document.getElementById('deathsCount');
+        const assistsCount = document.getElementById('assistsCount');
+        const recordingsList = document.getElementById('recordingsList');
+        const refreshRecordingsBtn = document.getElementById('refreshRecordingsBtn');
+        
+        // Helper Functions
+        function showNotification(message, type = 'info') {
+            const notification = document.createElement('div');
+            notification.className = 'notification';
+            notification.innerHTML = message;
+            document.body.appendChild(notification);
+            setTimeout(() => notification.remove(), 3000);
+        }
+        
+        function updateUI() {
+            if (isRecording) {
+                statusIndicator.innerHTML = '<div class="status-dot active"></div><span>Recording in progress...</span>';
+                startRecordingBtn.disabled = true;
+                stopRecordingBtn.disabled = false;
+                matchStatusText.textContent = 'Match in progress - Recording active';
+            } else {
+                statusIndicator.innerHTML = '<div class="status-dot"></div><span>Not Recording</span>';
+                startRecordingBtn.disabled = !isAuthenticated;
+                stopRecordingBtn.disabled = true;
+                matchStatusText.textContent = isAuthenticated ? 'Ready - Waiting for match start' : 'Sign in to start recording';
+            }
+            
+            // Update auth button
+            if (isAuthenticated && currentUser) {
+                authBtn.textContent = `👤 ${currentUser.username || currentUser.email}`;
+                authBtn.classList.remove('nav-btn-primary');
+                authBtn.classList.add('nav-btn-secondary');
+            } else {
+                authBtn.textContent = 'Sign In';
+                authBtn.classList.remove('nav-btn-secondary');
+                authBtn.classList.add('nav-btn-primary');
+            }
+        }
+        
+        function updateMatchStats() {
+            killsCount.textContent = matchStats.kills;
+            deathsCount.textContent = matchStats.deaths;
+            assistsCount.textContent = matchStats.assists;
+        }
+        
+        function updateCareerStats() {
+            if (recordings.length === 0) {
+                document.getElementById('totalMatches').textContent = '0';
+                document.getElementById('totalKills').textContent = '0';
+                document.getElementById('avgKills').textContent = '0';
+                return;
+            }
+            
+            const totalMatches = recordings.length;
+            const totalKills = recordings.reduce((sum, r) => sum + (r.matchStats?.kills || 0), 0);
+            const avgKills = (totalKills / totalMatches).toFixed(1);
+            
+            document.getElementById('totalMatches').textContent = totalMatches;
+            document.getElementById('totalKills').textContent = totalKills;
+            document.getElementById('avgKills').textContent = avgKills;
+        }
+        
+        function renderRecordings() {
+            if (!recordings || recordings.length === 0) {
+                recordingsList.innerHTML = '<div style="text-align: center; padding: 2rem;">No recordings yet. Start a match to create your first recording!</div>';
+                return;
+            }
+            
+            recordingsList.innerHTML = recordings.map(recording => `
+                <div class="recording-item">
+                    <div style="font-weight: 600;">🎬 ${recording.filename || 'Match Recording'}</div>
+                    <div class="recording-date">${new Date(recording.startTime || recording.createdAt).toLocaleString()}</div>
+                    <div class="recording-stats">
+                        Duration: ${Math.floor(recording.duration || 0)}s | 
+                        Size: ${((recording.fileSize || 0) / 1024 / 1024).toFixed(2)} MB
+                        ${recording.matchStats ? ` | K:${recording.matchStats.kills} D:${recording.matchStats.deaths} A:${recording.matchStats.assists}` : ''}
+                    </div>
+                    <button class="download-btn" onclick="downloadRecording('${recording.url}')">Download Recording</button>
+                </div>
+            `).join('');
+        }
+        
+        // Recording Functions
+        async function startRecording() {
+            if (!isAuthenticated) {
+                showNotification('Please sign in to start recording', 'error');
+                return;
+            }
+            
+            isRecording = true;
+            updateUI();
+            showNotification('Recording started! Match in progress...', 'success');
+            
+            // Simulate match stats updates
+            const interval = setInterval(() => {
+                if (isRecording && Math.random() < 0.3) {
+                    matchStats.kills += Math.floor(Math.random() * 2);
+                    matchStats.deaths += Math.floor(Math.random() * 1);
+                    matchStats.assists += Math.floor(Math.random() * 2);
+                    updateMatchStats();
+                }
+            }, 3000);
+            
+            window.recordingInterval = interval;
+        }
+        
+        async function stopRecording() {
+            if (!isRecording) return;
+            
+            clearInterval(window.recordingInterval);
+            isRecording = false;
+            
+            // Simulate upload progress
+            const progressBar = document.getElementById('uploadProgress');
+            const progressFill = document.getElementById('uploadProgressFill');
+            progressBar.style.display = 'block';
+            
+            for (let i = 0; i <= 100; i += 20) {
+                progressFill.style.width = i + '%';
+                await new Promise(resolve => setTimeout(resolve, 200));
+            }
+            
+            // Create recording object
+            const recording = {
+                id: Date.now().toString(),
+                filename: `match_${new Date().toISOString()}.mp4`,
+                url: `#recording-${Date.now()}`,
+                duration: Math.floor(Math.random() * 300) + 60,
+                fileSize: Math.floor(Math.random() * 10000000) + 5000000,
+                startTime: new Date(Date.now() - 300000),
+                createdAt: new Date(),
+                matchStats: { ...matchStats }
+            };
+            
+            recordings.unshift(recording);
+            renderRecordings();
+            updateCareerStats();
+            
+            setTimeout(() => {
+                progressBar.style.display = 'none';
+                progressFill.style.width = '0%';
+            }, 1000);
+            
+            // Reset match stats
+            matchStats = { kills: 0, deaths: 0, assists: 0 };
+            updateMatchStats();
+            
+            updateUI();
+            showNotification('Recording saved and uploaded to cloud!', 'success');
+        }
+        
+        // Game event simulation
+        function startGameEventSimulation() {
+            setInterval(() => {
+                if (isAuthenticated && !isRecording && Math.random() < 0.05) {
+                    // Simulate match start
+                    showNotification('🎮 Match detected! Starting recording...', 'info');
+                    startRecording();
+                }
+                
+                if (isRecording && Math.random() < 0.02) {
+                    // Simulate match end
+                    showNotification('🏆 Match ended! Stopping recording...', 'info');
+                    stopRecording();
+                }
+            }, 10000);
+        }
+        
+        // Auth Functions
+        async function login(email, password) {
+            if (email === 'testuser@example.com' && password === '123456') {
+                currentUser = { email, username: 'TestUser' };
+                isAuthenticated = true;
+                localStorage.setItem('user', JSON.stringify(currentUser));
+                authModal.style.display = 'none';
+                updateUI();
+                showNotification('Welcome back! Ready to record your matches.', 'success');
+                loadRecordings();
+                return true;
+            }
+            showNotification('Invalid credentials. Use demo account: testuser@example.com / 123456', 'error');
+            return false;
+        }
+        
+        async function signup(username, email, password) {
+            if (username && email && password) {
+                currentUser = { username, email };
+                isAuthenticated = true;
+                localStorage.setItem('user', JSON.stringify(currentUser));
+                authModal.style.display = 'none';
+                updateUI();
+                showNotification('Account created successfully!', 'success');
+                return true;
+            }
+            showNotification('Please fill all fields', 'error');
+            return false;
+        }
+        
+        async function logout() {
+            isAuthenticated = false;
+            currentUser = null;
+            localStorage.removeItem('user');
+            updateUI();
+            showNotification('Logged out successfully', 'info');
+        }
+        
+        async function loadRecordings() {
+            if (!isAuthenticated) return;
+            
+            // Load from localStorage
+            const saved = localStorage.getItem('recordings');
+            if (saved) {
+                recordings = JSON.parse(saved);
+                renderRecordings();
+                updateCareerStats();
+            }
+        }
+        
+        function downloadRecording(url) {
+            showNotification('Download started (demo mode)', 'success');
+        }
+        
+        // Save recordings to localStorage
+        function saveRecordings() {
+            if (recordings.length > 0) {
+                localStorage.setItem('recordings', JSON.stringify(recordings));
+            }
+        }
+        
+        // Event Listeners
+        authBtn.addEventListener('click', () => {
+            if (isAuthenticated) {
+                logout();
+            } else {
+                authModal.style.display = 'flex';
+            }
+        });
+        
+        document.getElementById('loginSubmitBtn')?.addEventListener('click', async () => {
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+            await login(email, password);
+        });
+        
+        document.getElementById('signupSubmitBtn')?.addEventListener('click', async () => {
+            const username = document.getElementById('signupUsername').value;
+            const email = document.getElementById('signupEmail').value;
+            const password = document.getElementById('signupPassword').value;
+            await signup(username, email, password);
+        });
+        
+        startRecordingBtn.addEventListener('click', startRecording);
+        stopRecordingBtn.addEventListener('click', stopRecording);
+        
+        refreshRecordingsBtn.addEventListener('click', () => {
+            loadRecordings();
+            showNotification('Recordings refreshed', 'info');
+        });
+        
+        // Tab switching in modal
+        document.querySelectorAll('.modal-tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                const tabName = tab.dataset.tab;
+                document.querySelectorAll('.modal-tab').forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+                document.getElementById('loginForm').style.display = tabName === 'login' ? 'block' : 'none';
+                document.getElementById('signupForm').style.display = tabName === 'signup' ? 'block' : 'none';
+            });
+        });
+        
+        // Close modal on outside click
+        authModal.addEventListener('click', (e) => {
+            if (e.target === authModal) {
+                authModal.style.display = 'none';
+            }
+        });
+        
+        // Navigation
+        document.getElementById('dashboardBtn')?.addEventListener('click', () => {
+            // Already on dashboard
+        });
+        
+        document.getElementById('recorderBtn')?.addEventListener('click', () => {
+            document.getElementById('dashboardView').scrollIntoView({ behavior: 'smooth' });
+        });
+        
+        // Check saved session
+        const savedUser = localStorage.getItem('user');
+        if (savedUser) {
+            currentUser = JSON.parse(savedUser);
+            isAuthenticated = true;
+            updateUI();
+            loadRecordings();
+        }
+        
+        // Start game event simulation
+        startGameEventSimulation();
+        
+        // Save recordings periodically
+        setInterval(saveRecordings, 5000);
+        
+        // Initial render
+        updateUI();
+        
+        // Add animation to cards
+        document.querySelectorAll('.card').forEach((card, index) => {
+            card.style.animation = `fadeInUp 0.5s ease ${index * 0.1}s forwards`;
+            card.style.opacity = '0';
+            card.style.animationFillMode = 'forwards';
+        });
+    </script>
+</body>
+</html>
