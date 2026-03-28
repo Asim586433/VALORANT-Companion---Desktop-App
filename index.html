@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VALORANT Companion | Desktop App</title>
+    <title>VALORANT Companion | Dynamic Colors</title>
     <style>
         * {
             margin: 0;
@@ -13,10 +13,16 @@
 
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'SF Pro Display', 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
-            color: #ffffff;
+            transition: background 0.5s ease;
             overflow-x: hidden;
             scroll-behavior: smooth;
+        }
+
+        /* Dynamic Background Animation */
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
         }
 
         /* Custom Scrollbar */
@@ -58,7 +64,7 @@
             position: sticky;
             top: 0;
             z-index: 100;
-            background: rgba(15, 12, 41, 0.8);
+            background: rgba(0, 0, 0, 0.3);
             backdrop-filter: blur(20px);
             border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         }
@@ -77,7 +83,7 @@
             gap: 12px;
             font-size: 1.5rem;
             font-weight: 700;
-            background: linear-gradient(135deg, #ff6a00, #ee0979);
+            background: linear-gradient(135deg, #fff, #a8c0ff);
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
@@ -85,6 +91,12 @@
 
         .logo-icon {
             font-size: 2rem;
+            animation: spin 3s linear infinite;
+        }
+
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
         }
 
         .nav-buttons {
@@ -100,16 +112,28 @@
             font-weight: 500;
             transition: all 0.3s ease;
             font-size: 0.9rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .nav-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .nav-btn:hover::before {
+            left: 100%;
         }
 
         .nav-btn-primary {
-            background: linear-gradient(135deg, #ff6a00, #ee0979);
+            background: linear-gradient(135deg, var(--grad-start), var(--grad-end));
             color: white;
-        }
-
-        .nav-btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 25px rgba(238, 9, 121, 0.3);
         }
 
         .nav-btn-secondary {
@@ -120,6 +144,24 @@
 
         .nav-btn-secondary:hover {
             background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+
+        /* Color Theme Button */
+        .color-theme-btn {
+            background: rgba(255,255,255,0.2);
+            border: 1px solid rgba(255,255,255,0.3);
+            border-radius: 50px;
+            padding: 8px 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: white;
+            font-size: 0.85rem;
+        }
+
+        .color-theme-btn:hover {
+            transform: scale(1.05);
+            background: rgba(255,255,255,0.3);
         }
 
         /* Main Content */
@@ -140,15 +182,16 @@
             font-size: 3.5rem;
             font-weight: 700;
             margin-bottom: 1rem;
-            background: linear-gradient(135deg, #fff, #a8c0ff);
+            background: linear-gradient(135deg, #fff, var(--grad-end));
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
+            animation: gradientShift 3s ease infinite;
         }
 
         .hero p {
             font-size: 1.2rem;
-            color: rgba(255, 255, 255, 0.8);
+            color: rgba(255, 255, 255, 0.9);
             max-width: 600px;
             margin: 0 auto;
         }
@@ -161,39 +204,44 @@
             margin-bottom: 3rem;
         }
 
-        /* Card Styles */
+        /* Card Styles with Dynamic Gradients */
         .card {
-            background: rgba(255, 255, 255, 0.05);
+            background: linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0.05));
             backdrop-filter: blur(10px);
             border-radius: 2rem;
             padding: 1.5rem;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
             position: relative;
             overflow: hidden;
+            animation: cardGlow 3s ease-in-out infinite;
+        }
+
+        @keyframes cardGlow {
+            0%, 100% { box-shadow: 0 0 20px rgba(255,255,255,0.1); }
+            50% { box-shadow: 0 0 30px rgba(255,255,255,0.2); }
         }
 
         .card::before {
             content: '';
             position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 2px;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.5), transparent);
-            transform: translateX(-100%);
-            transition: transform 0.6s ease;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            opacity: 0;
+            transition: opacity 0.6s ease;
         }
 
         .card:hover::before {
-            transform: translateX(100%);
+            opacity: 1;
         }
 
         .card:hover {
-            transform: translateY(-5px);
-            background: rgba(255, 255, 255, 0.08);
-            border-color: rgba(255, 255, 255, 0.2);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            transform: translateY(-8px) scale(1.02);
+            background: linear-gradient(135deg, rgba(255,255,255,0.15), rgba(255,255,255,0.08));
+            border-color: rgba(255, 255, 255, 0.4);
         }
 
         /* Grid Item Sizes */
@@ -223,6 +271,12 @@
 
         .card-icon {
             font-size: 1.5rem;
+            animation: bounce 2s ease-in-out infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
         }
 
         /* Status Indicator */
@@ -268,7 +322,25 @@
             padding: 1rem;
             background: rgba(255, 255, 255, 0.05);
             border-radius: 1rem;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-item::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, var(--grad-start), var(--grad-end));
+            transform: scaleX(0);
             transition: transform 0.3s ease;
+        }
+
+        .stat-item:hover::after {
+            transform: scaleX(1);
         }
 
         .stat-item:hover {
@@ -279,7 +351,7 @@
         .stat-value {
             font-size: 2rem;
             font-weight: 700;
-            background: linear-gradient(135deg, #ff6a00, #ee0979);
+            background: linear-gradient(135deg, var(--grad-start), var(--grad-end));
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
@@ -301,16 +373,33 @@
             transition: all 0.3s ease;
             font-size: 0.9rem;
             width: 100%;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .btn:hover::before {
+            left: 100%;
         }
 
         .btn-primary {
-            background: linear-gradient(135deg, #ff6a00, #ee0979);
+            background: linear-gradient(135deg, var(--grad-start), var(--grad-end));
             color: white;
         }
 
         .btn-primary:hover:not(:disabled) {
             transform: translateY(-2px);
-            box-shadow: 0 10px 25px rgba(238, 9, 121, 0.3);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
         }
 
         .btn-secondary {
@@ -321,6 +410,7 @@
 
         .btn-secondary:hover:not(:disabled) {
             background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
         }
 
         .btn:disabled {
@@ -350,6 +440,24 @@
             border-radius: 1rem;
             padding: 1rem;
             transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .recording-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 3px;
+            height: 100%;
+            background: linear-gradient(180deg, var(--grad-start), var(--grad-end));
+            transform: scaleY(0);
+            transition: transform 0.3s ease;
+        }
+
+        .recording-item:hover::before {
+            transform: scaleY(1);
         }
 
         .recording-item:hover {
@@ -384,7 +492,8 @@
         }
 
         .download-btn:hover {
-            background: rgba(255, 255, 255, 0.2);
+            background: linear-gradient(135deg, var(--grad-start), var(--grad-end));
+            transform: translateY(-2px);
         }
 
         /* Progress Bar */
@@ -399,7 +508,7 @@
 
         .progress-fill {
             height: 100%;
-            background: linear-gradient(90deg, #ff6a00, #ee0979);
+            background: linear-gradient(90deg, var(--grad-start), var(--grad-end));
             width: 0%;
             transition: width 0.3s ease;
             border-radius: 2px;
@@ -447,11 +556,21 @@
             color: rgba(255, 255, 255, 0.7);
             font-size: 1rem;
             transition: all 0.3s ease;
+            position: relative;
         }
 
         .modal-tab.active {
-            color: #ff6a00;
-            border-bottom: 2px solid #ff6a00;
+            color: var(--grad-start);
+        }
+
+        .modal-tab.active::after {
+            content: '';
+            position: absolute;
+            bottom: -1px;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, var(--grad-start), var(--grad-end));
         }
 
         .input-group {
@@ -471,7 +590,7 @@
 
         .input-group input:focus {
             outline: none;
-            border-color: #ff6a00;
+            border-color: var(--grad-start);
             background: rgba(255, 255, 255, 0.15);
         }
 
@@ -527,14 +646,10 @@
             width: 40px;
             height: 40px;
             border: 3px solid rgba(255, 255, 255, 0.1);
-            border-top-color: #ff6a00;
+            border-top-color: var(--grad-start);
             border-radius: 50%;
             animation: spin 1s linear infinite;
             margin: 2rem auto;
-        }
-
-        @keyframes spin {
-            to { transform: rotate(360deg); }
         }
 
         /* Notification */
@@ -546,7 +661,7 @@
             backdrop-filter: blur(10px);
             padding: 1rem 1.5rem;
             border-radius: 12px;
-            border-left: 4px solid #ff6a00;
+            border-left: 4px solid var(--grad-start);
             animation: slideInRight 0.3s ease;
             z-index: 1000;
         }
@@ -561,6 +676,16 @@
                 opacity: 1;
             }
         }
+
+        /* Floating Animation */
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .floating {
+            animation: float 3s ease-in-out infinite;
+        }
     </style>
 </head>
 <body>
@@ -571,6 +696,10 @@
                 <div class="logo">
                     <span class="logo-icon">🎮</span>
                     <span>VALORANT Companion</span>
+                </div>
+                <div style="display: flex; gap: 12px;">
+                    <button class="color-theme-btn" id="randomColorBtn">🎨 Random Theme</button>
+                    <button class="color-theme-btn" id="cycleColorBtn">🌈 Cycle Colors</button>
                 </div>
                 <div class="nav-buttons" id="navButtons">
                     <button class="nav-btn nav-btn-secondary" id="dashboardBtn">Dashboard</button>
@@ -584,7 +713,7 @@
         <div class="main-content" id="mainContent">
             <!-- Hero Section -->
             <div class="hero">
-                <h1>Elevate Your Game</h1>
+                <h1 id="heroTitle">Elevate Your Game</h1>
                 <p>Automatic recording, cloud storage, and match analytics for VALORANT</p>
             </div>
 
@@ -725,6 +854,91 @@
     </div>
 
     <script>
+        // Beautiful Color Schemes
+        const colorSchemes = [
+            { name: 'Sunset', start: '#ff6a00', end: '#ee0979', bg: ['#1a1a2e', '#16213e', '#0f3460'] },
+            { name: 'Ocean', start: '#00b4db', end: '#0083b0', bg: ['#0f2027', '#203a43', '#2c5364'] },
+            { name: 'Forest', start: '#11998e', end: '#38ef7d', bg: ['#134e5e', '#71b280', '#2b7a4b'] },
+            { name: 'Aurora', start: '#7f00ff', end: '#e100ff', bg: ['#200122', '#6b0000', '#ff0066'] },
+            { name: 'Fire', start: '#f12711', end: '#f5af19', bg: ['#8e0e00', '#1f1c18', '#c31432'] },
+            { name: 'Neon', start: '#00ff87', end: '#60efff', bg: ['#000428', '#004e92', '#00d2ff'] },
+            { name: 'Royal', start: '#ff0080', end: '#ff8c00', bg: ['#000000', '#434343', '#8e2de2'] },
+            { name: 'Midnight', start: '#2c3e50', end: '#3498db', bg: ['#0b0b0b', '#1a2a3a', '#2c3e50'] },
+            { name: 'Candy', start: '#ff4b1f', end: '#ff9068', bg: ['#4b6cb7', '#182848', '#ff6a00'] },
+            { name: 'Galaxy', start: '#8e2de2', end: '#4a00e0', bg: ['#000000', '#0f0c29', '#302b63'] }
+        ];
+        
+        let currentSchemeIndex = 0;
+        let colorCycleInterval = null;
+        
+        // Apply color scheme to all elements
+        function applyColorScheme(scheme) {
+            // Set CSS variables
+            document.documentElement.style.setProperty('--grad-start', scheme.start);
+            document.documentElement.style.setProperty('--grad-end', scheme.end);
+            
+            // Update body background with animated gradient
+            document.body.style.background = `linear-gradient(135deg, ${scheme.bg[0]}, ${scheme.bg[1]}, ${scheme.bg[2]})`;
+            document.body.style.backgroundSize = '200% 200%';
+            document.body.style.animation = 'gradientShift 5s ease infinite';
+            
+            // Update all gradient elements
+            const gradientElements = document.querySelectorAll('.btn-primary, .nav-btn-primary, .stat-value, .hero h1, .progress-fill');
+            gradientElements.forEach(el => {
+                if (el.classList.contains('stat-value') || el.classList.contains('hero') || el.id === 'heroTitle') {
+                    el.style.background = `linear-gradient(135deg, ${scheme.start}, ${scheme.end})`;
+                    el.style.webkitBackgroundClip = 'text';
+                    el.style.backgroundClip = 'text';
+                    el.style.color = 'transparent';
+                } else if (el.style.background !== 'rgba(255, 255, 255, 0.1)') {
+                    el.style.background = `linear-gradient(135deg, ${scheme.start}, ${scheme.end})`;
+                }
+            });
+            
+            // Update notification borders
+            const notifications = document.querySelectorAll('.notification');
+            notifications.forEach(n => {
+                n.style.borderLeftColor = scheme.start;
+            });
+            
+            // Update modal tab active color
+            const activeTab = document.querySelector('.modal-tab.active');
+            if (activeTab) {
+                activeTab.style.color = scheme.start;
+            }
+            
+            // Update recording item borders
+            const recordingItems = document.querySelectorAll('.recording-item');
+            recordingItems.forEach(item => {
+                const pseudo = window.getComputedStyle(item, '::before');
+                item.style.setProperty('--grad-start', scheme.start);
+                item.style.setProperty('--grad-end', scheme.end);
+            });
+            
+            console.log(`🎨 Applied color scheme: ${scheme.name}`);
+        }
+        
+        function randomColorScheme() {
+            const newIndex = Math.floor(Math.random() * colorSchemes.length);
+            currentSchemeIndex = newIndex;
+            applyColorScheme(colorSchemes[currentSchemeIndex]);
+            showNotification(`🎨 Theme changed to: ${colorSchemes[currentSchemeIndex].name}`, 'info');
+        }
+        
+        function cycleColorSchemes() {
+            if (colorCycleInterval) {
+                clearInterval(colorCycleInterval);
+                colorCycleInterval = null;
+                showNotification('🌈 Color cycling stopped', 'info');
+            } else {
+                colorCycleInterval = setInterval(() => {
+                    currentSchemeIndex = (currentSchemeIndex + 1) % colorSchemes.length;
+                    applyColorScheme(colorSchemes[currentSchemeIndex]);
+                }, 3000);
+                showNotification('🌈 Color cycling started!', 'success');
+            }
+        }
+        
         // App State
         let isAuthenticated = false;
         let isRecording = false;
@@ -745,6 +959,8 @@
         const assistsCount = document.getElementById('assistsCount');
         const recordingsList = document.getElementById('recordingsList');
         const refreshRecordingsBtn = document.getElementById('refreshRecordingsBtn');
+        const randomColorBtn = document.getElementById('randomColorBtn');
+        const cycleColorBtn = document.getElementById('cycleColorBtn');
         
         // Helper Functions
         function showNotification(message, type = 'info') {
@@ -818,7 +1034,7 @@
                         Size: ${((recording.fileSize || 0) / 1024 / 1024).toFixed(2)} MB
                         ${recording.matchStats ? ` | K:${recording.matchStats.kills} D:${recording.matchStats.deaths} A:${recording.matchStats.assists}` : ''}
                     </div>
-                    <button class="download-btn" onclick="downloadRecording('${recording.url}')">Download Recording</button>
+                    <button class="download-btn" onclick="window.downloadRecording('${recording.url}')">Download Recording</button>
                 </div>
             `).join('');
         }
@@ -832,7 +1048,7 @@
             
             isRecording = true;
             updateUI();
-            showNotification('Recording started! Match in progress...', 'success');
+            showNotification('🎬 Recording started! Match in progress...', 'success');
             
             // Simulate match stats updates
             const interval = setInterval(() => {
@@ -841,6 +1057,11 @@
                     matchStats.deaths += Math.floor(Math.random() * 1);
                     matchStats.assists += Math.floor(Math.random() * 2);
                     updateMatchStats();
+                    
+                    // Show kill notification
+                    if (Math.random() < 0.5) {
+                        showNotification(`💀 ${matchStats.kills} kills!`, 'info');
+                    }
                 }
             }, 3000);
             
@@ -889,7 +1110,7 @@
             updateMatchStats();
             
             updateUI();
-            showNotification('Recording saved and uploaded to cloud!', 'success');
+            showNotification('✅ Recording saved and uploaded to cloud!', 'success');
         }
         
         // Game event simulation
@@ -917,11 +1138,11 @@
                 localStorage.setItem('user', JSON.stringify(currentUser));
                 authModal.style.display = 'none';
                 updateUI();
-                showNotification('Welcome back! Ready to record your matches.', 'success');
+                showNotification('✨ Welcome back! Ready to record your matches.', 'success');
                 loadRecordings();
                 return true;
             }
-            showNotification('Invalid credentials. Use demo account: testuser@example.com / 123456', 'error');
+            showNotification('❌ Invalid credentials. Use demo account: testuser@example.com / 123456', 'error');
             return false;
         }
         
@@ -932,10 +1153,10 @@
                 localStorage.setItem('user', JSON.stringify(currentUser));
                 authModal.style.display = 'none';
                 updateUI();
-                showNotification('Account created successfully!', 'success');
+                showNotification('🎉 Account created successfully!', 'success');
                 return true;
             }
-            showNotification('Please fill all fields', 'error');
+            showNotification('⚠️ Please fill all fields', 'error');
             return false;
         }
         
@@ -944,7 +1165,7 @@
             currentUser = null;
             localStorage.removeItem('user');
             updateUI();
-            showNotification('Logged out successfully', 'info');
+            showNotification('👋 Logged out successfully', 'info');
         }
         
         async function loadRecordings() {
@@ -959,8 +1180,8 @@
             }
         }
         
-        function downloadRecording(url) {
-            showNotification('Download started (demo mode)', 'success');
+        window.downloadRecording = function(url) {
+            showNotification('📥 Download started (demo mode)', 'success');
         }
         
         // Save recordings to localStorage
@@ -997,8 +1218,12 @@
         
         refreshRecordingsBtn.addEventListener('click', () => {
             loadRecordings();
-            showNotification('Recordings refreshed', 'info');
+            showNotification('🔄 Recordings refreshed', 'info');
         });
+        
+        // Color theme buttons
+        randomColorBtn.addEventListener('click', randomColorScheme);
+        cycleColorBtn.addEventListener('click', cycleColorSchemes);
         
         // Tab switching in modal
         document.querySelectorAll('.modal-tab').forEach(tab => {
@@ -1042,6 +1267,11 @@
         // Save recordings periodically
         setInterval(saveRecordings, 5000);
         
+        // Apply random color scheme on load
+        setTimeout(() => {
+            randomColorScheme();
+        }, 100);
+        
         // Initial render
         updateUI();
         
@@ -1051,6 +1281,19 @@
             card.style.opacity = '0';
             card.style.animationFillMode = 'forwards';
         });
+        
+        // Dynamic hero title effect
+        const heroTitle = document.getElementById('heroTitle');
+        const titles = ['Elevate Your Game', 'Dominate the Arena', 'Capture Every Moment', 'Rise to Glory', 'Unleash Your Potential'];
+        let titleIndex = 0;
+        setInterval(() => {
+            titleIndex = (titleIndex + 1) % titles.length;
+            heroTitle.style.opacity = '0';
+            setTimeout(() => {
+                heroTitle.textContent = titles[titleIndex];
+                heroTitle.style.opacity = '1';
+            }, 300);
+        }, 5000);
     </script>
 </body>
 </html>
